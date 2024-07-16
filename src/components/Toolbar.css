@@ -1,0 +1,18 @@
+.toolbar {
+  display: flex;
+  justify-content: center;
+  width: 200px;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+}
+
+.toolbar-item {
+  padding: 10px;
+  margin-bottom: 5px;
+  margin-top: 3%;
+  background: #f0f0f0;
+  cursor: grab;
+  background-color: rgb(90, 90, 187);
+  color: white;
+  border-radius: 5px;
+}
