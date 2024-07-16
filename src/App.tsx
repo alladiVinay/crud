@@ -14,6 +14,7 @@ interface Component {
 
 const App: React.FC = () => {
   const [components, setComponents] = useState<Component[]>([]);
+  const [previewMode, setPreviewMode] = useState(false);
 
   const addComponent = (component: { type: string; label: string }) => {
     const newComponent: Component = {
@@ -27,9 +28,19 @@ const App: React.FC = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div>
+      <div className="app">
         <Toolbar addComponent={addComponent} />
-        <Canvas components={components} setComponents={setComponents} />
+        <button
+          className="toggle-button"
+          onClick={() => setPreviewMode(!previewMode)}
+        >
+          {previewMode ? "Edit Mode" : "Preview Mode"}
+        </button>
+        <Canvas
+          components={components}
+          setComponents={setComponents}
+          previewMode={previewMode}
+        />
       </div>
     </DndProvider>
   );

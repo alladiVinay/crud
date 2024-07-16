@@ -1,18 +1,21 @@
+/* src/components/Toolbar.css */
 .toolbar {
-  display: flex;
-  justify-content: center;
   width: 200px;
-  border-right: 1px solid #ddd;
+  border-right: 2px solid #ddd;
   padding: 10px;
+  background-color: #f7f7f7;
 }
 
 .toolbar-item {
   padding: 10px;
-  margin-bottom: 5px;
-  margin-top: 3%;
-  background: #f0f0f0;
-  cursor: grab;
-  background-color: rgb(90, 90, 187);
-  color: white;
+  margin-bottom: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.toolbar-item:hover {
+  background-color: #e0e0e0;
 }

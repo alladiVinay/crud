@@ -10,14 +10,23 @@ interface Component {
 
 interface ImageComponentProps {
   component: Component;
+  previewMode: boolean;
 }
 
-const ImageComponent: React.FC<ImageComponentProps> = ({ component }) => {
-  const [src, setSrc] = useState<string>("");
+const ImageComponent: React.FC<ImageComponentProps> = ({
+  component,
+  previewMode,
+}) => {
+  const [src, setSrc] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSrc(URL.createObjectURL(e.target.files[0]));
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSrc(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -26,8 +35,14 @@ const ImageComponent: React.FC<ImageComponentProps> = ({ component }) => {
       className="image-component"
       style={{ position: "absolute", left: component.left, top: component.top }}
     >
-      <input type="file" onChange={handleChange} />
-      {src && <img src={src} alt="Uploaded" />}
+      {previewMode ? (
+        src && <img src={src} alt="Uploaded" />
+      ) : (
+        <>
+          <input type="file" onChange={handleFileChange} />
+          {src && <img src={src} alt="Uploaded" />}
+        </>
+      )}
     </div>
   );
 };

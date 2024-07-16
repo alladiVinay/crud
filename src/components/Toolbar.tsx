@@ -1,5 +1,5 @@
 import React from "react";
-import { useDrag } from "react-dnd";
+import DraggableItem from "./DraggableItem";
 import "./Toolbar.css";
 
 const components = [
@@ -14,31 +14,10 @@ interface ToolbarProps {
 
 const Toolbar: React.FC<ToolbarProps> = () => {
   return (
-    // <div className="toolbar">
-    <div style={{ display: "flex", justifyContent: "center", gap: 5 }}>
+    <div className="toolbar">
       {components.map((component, index) => (
-        <ToolbarItem key={index} component={component} />
+        <DraggableItem key={index} component={component} />
       ))}
-    </div>
-  );
-};
-
-interface ToolbarItemProps {
-  component: { type: string; label: string };
-}
-
-const ToolbarItem: React.FC<ToolbarItemProps> = ({ component }) => {
-  const [, drag] = useDrag({
-    type: "component",
-    item: component,
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  return (
-    <div ref={drag} className="toolbar-item">
-      {component.label}
     </div>
   );
 };

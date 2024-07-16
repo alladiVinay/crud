@@ -14,47 +14,64 @@ interface Component {
 
 interface CanvasProps {
   components: Component[];
-  setComponents: React.Dispatch<React.SetStateAction<Component[]>>;
+  setComponents: (components: Component[]) => void;
+  previewMode: boolean;
 }
 
-const Canvas: React.FC<CanvasProps> = ({ components, setComponents }) => {
-  const [, drop] = useDrop({
+const Canvas: React.FC<CanvasProps> = ({
+  components,
+  setComponents,
+  previewMode,
+}) => {
+  const [{ isOver }, drop] = useDrop({
     accept: "component",
-    drop: (item: Component, monitor) => {
-      const offset = monitor.getClientOffset();
-      const newComponent = {
-        id: components.length,
-        type: item.type,
-        left: offset!.x,
-        top: offset!.y,
-      };
-      setComponents([...components, newComponent]);
+    drop: (item: any, monitor) => {
+      if (!previewMode) {
+        const delta = monitor.getClientOffset();
+        const left = delta!.x;
+        const top = delta!.y;
+        addComponent(item.type, left, top);
+      }
     },
+    canDrop: () => !previewMode,
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
   });
 
+  const addComponent = (type: string, left: number, top: number) => {
+    const id = components.length + 1;
+    setComponents([...components, { id, type, left, top }]);
+  };
+
   return (
-    <div ref={drop} className="canvas">
-      {/* <div
-      ref={drop}
-      style={{
-        padding: "80px",
-        border: "1px solid #ddd ",
-        marginTop: "50px",
-        flex: 1,
-        position: "relative",
-        marginLeft: "20px",
-        height: "100%",
-        marginRight: "20px",
-      }}
-    > */}
+    <div ref={drop} className={`canvas ${previewMode ? "preview-mode" : ""}`}>
       {components.map((component) => {
         switch (component.type) {
           case "text":
-            return <TextComponent key={component.id} component={component} />;
+            return (
+              <TextComponent
+                key={component.id}
+                component={component}
+                previewMode={previewMode}
+              />
+            );
           case "image":
-            return <ImageComponent key={component.id} component={component} />;
+            return (
+              <ImageComponent
+                key={component.id}
+                component={component}
+                previewMode={previewMode}
+              />
+            );
           case "button":
-            return <ButtonComponent key={component.id} component={component} />;
+            return (
+              <ButtonComponent
+                key={component.id}
+                component={component}
+                previewMode={previewMode}
+              />
+            );
           default:
             return null;
         }
