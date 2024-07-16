@@ -1,9 +1,9 @@
 import React from "react";
-import { useDrop } from "react-dnd";
-import TextComponent from "./TextComponent";
-import ImageComponent from "./ImageComponent";
-import ButtonComponent from "./ButtonComponent";
-import "./Canvas.css";
+import { useDrop } from "react-dnd"; // Importing useDrop hook from react-dnd library
+import TextComponent from "./TextComponent"; // Importing TextComponent
+import ImageComponent from "./ImageComponent"; // Importing ImageComponent
+import ButtonComponent from "./ButtonComponent"; // Importing ButtonComponent
+import "./Canvas.css"; // Importing CSS file for Canvas component styling
 
 interface Component {
   id: number;
@@ -13,9 +13,9 @@ interface Component {
 }
 
 interface CanvasProps {
-  components: Component[];
-  setComponents: (components: Component[]) => void;
-  previewMode: boolean;
+  components: Component[]; // Array of components on the canvas
+  setComponents: (components: Component[]) => void; // Function to update components state
+  previewMode: boolean; // Flag indicating if preview mode is active
 }
 
 const Canvas: React.FC<CanvasProps> = ({
@@ -23,29 +23,31 @@ const Canvas: React.FC<CanvasProps> = ({
   setComponents,
   previewMode,
 }) => {
-  const [{ isOver }, drop] = useDrop({
-    accept: "component",
+  const [, drop] = useDrop({
+    accept: "component", // Accepting only components of type "component" for drop
     drop: (item: any, monitor) => {
       if (!previewMode) {
-        const delta = monitor.getClientOffset();
-        const left = delta!.x;
-        const top = delta!.y;
-        addComponent(item.type, left, top);
+        // Only allow dropping if not in preview mode
+        const delta = monitor.getClientOffset(); // Getting client offset of drop
+        const left = delta!.x; // Calculating left position based on drop
+        const top = delta!.y; // Calculating top position based on drop
+        addComponent(item.type, left, top); // Adding component to canvas at calculated position
       }
     },
-    canDrop: () => !previewMode,
+    canDrop: () => !previewMode, // Disallow dropping if in preview mode
     collect: (monitor) => ({
-      isOver: monitor.isOver(),
+      isOver: monitor.isOver(), // Collecting whether a component is being dragged over the canvas
     }),
   });
 
   const addComponent = (type: string, left: number, top: number) => {
-    const id = components.length + 1;
-    setComponents([...components, { id, type, left, top }]);
+    const id = components.length + 1; // Generating unique id for the new component
+    setComponents([...components, { id, type, left, top }]); // Adding new component to the components array
   };
 
   return (
     <div ref={drop} className={`canvas ${previewMode ? "preview-mode" : ""}`}>
+      {/* Rendering each component on the canvas based on its type */}
       {components.map((component) => {
         switch (component.type) {
           case "text":
@@ -73,7 +75,7 @@ const Canvas: React.FC<CanvasProps> = ({
               />
             );
           default:
-            return null;
+            return null; // Handling any unknown component types
         }
       })}
     </div>
